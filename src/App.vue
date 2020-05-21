@@ -1,17 +1,49 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+     
+<input type="text" v-model="channelname" /><button @click="addstream">Add</button>
+  
+  <vdrag v-for="stream in streams" :key="stream.id" @activated="onActivated($event,stream)"  @deactivated="onDeactivated($event, stream)"   :w="200" :h="400" v-on:resizing="resize($event, stream)" v-on:dragging="resize($event,stream)"   :snapToGrid="true" :gridX="20">
+          <Stream :channel="stream.channel"  :w="stream.w" :h="stream.h" :active="stream.active" />
+  </vdrag>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import Stream from './components/Stream.vue'
+ import vdrag from 'vue-drag-resize'
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    vdrag,
+    Stream
+  },
+  data() { 
+    return {
+      streams: [],
+      streamobj: {channel:'summit1g', w:200, h:400, active:true},
+      channelname: 'summit1g',
+
+    }
+  },
+  methods: {
+    onActivated: function(evt, stream) {
+      stream.active=true;
+    },
+    onDeactivated: function(evt, stream) {
+      stream.active=false;
+    },
+    addstream: function() {
+      this.streams.push({channel: this.channelname, w: 200, h:400, active: true});
+    },
+     resize(newRect, stream) {  
+       stream.w = newRect.width;
+       stream.h = newRect.height;
+        this.width = newRect.width;
+        this.height = newRect.height;
+        this.top = newRect.top;
+        this.left = newRect.left; 
+        } 
   }
 }
 </script>
